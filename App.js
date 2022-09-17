@@ -1,20 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import React, { useState } from "react";
+import * as SplashScreen from "expo-splash-screen";
+import { NavigationContainer } from "@react-navigation/native";
+import useLoadedFonts from "./hooks/useLoadedFonts";
+import { useRoute } from "./routing";
+import { useEffect, useMemo } from "react/cjs/react.development";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const { fontsLoaded } = useLoadedFonts();
+  const [isAuth, setIsAuth] = useState(false);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const currentRote = useMemo(() => useRoute(isAuth, setIsAuth), [isAuth]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return <NavigationContainer>{currentRote}</NavigationContainer>;
+}
