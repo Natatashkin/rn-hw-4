@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { IconButton } from "./components";
 import { LoginScreen, RegistrationScreen } from "./screens/auth";
 import { PostsScreen, ProfileScreen, CreatePostsScreen } from "./screens/main";
 import { APP_COLORS } from "./components/constants";
@@ -14,23 +15,27 @@ const AuthStack = createStackNavigator();
 const HomeStack = createBottomTabNavigator();
 const { blue, transparentBlack, yellow, darkGrey } = APP_COLORS;
 
+const HEADER_OPTIONS = {
+  headerStyle: {
+    elevation: 5,
+    shadowOpacity: 0.3,
+    borderBottomWidth: 1,
+  },
+  headerTitleAlign: "center",
+  headerTitleStyle: {
+    fontFamily: "Roboto-Medium",
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  headerShadowVisible: true,
+};
+
 function HomeTabs({ onAuth }) {
   return (
     <HomeStack.Navigator
       screenOptions={{
         tabBarShowLabel: false,
-        headerStyle: {
-          elevation: 5,
-          shadowOpacity: 0.3,
-          borderBottomWidth: 1,
-        },
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontFamily: "Roboto-Medium",
-          fontSize: 17,
-          lineHeight: 22,
-        },
-        headerShadowVisible: true,
+        ...HEADER_OPTIONS,
       }}
     >
       <HomeStack.Screen
@@ -39,13 +44,14 @@ function HomeTabs({ onAuth }) {
           tabBarIcon: () => (
             <AntDesign name="appstore-o" size={24} color={transparentBlack} />
           ),
-          headerRight: () => {
-            return (
-              <Pressable onPress={() => onAuth(false)}>
-                <MaterialIcons name="logout" size={24} color={darkGrey} />
-              </Pressable>
-            );
-          },
+          headerRight: () => (
+            <IconButton
+              icon={MaterialIcons}
+              name="logout"
+              color={darkGrey}
+              onPress={() => onAuth(false)}
+            />
+          ),
           headerRightContainerStyle: {
             marginRight: 10,
           },
@@ -56,13 +62,18 @@ function HomeTabs({ onAuth }) {
       <HomeStack.Screen
         options={({ navigation }) => ({
           title: "Створити пост",
-          // headerBackButtonMenuEnabled: true,
           headerBackVisible: true,
           headerLeft: () => (
-            <Pressable onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color={blue} />
-            </Pressable>
+            <IconButton
+              name="arrow-back"
+              icon={Ionicons}
+              color={blue}
+              onPress={() => navigation.goBack()}
+            />
           ),
+          headerLeftContainerStyle: {
+            marginLeft: 10,
+          },
           tabBarIcon: () => (
             <View
               style={{
