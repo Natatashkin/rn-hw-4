@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { AppText } from "../../../components";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ onFocused }) => {
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    onFocused(isFocused);
+  }, [isFocused]);
   return (
     <View style={styles.screenContainer}>
       <AppText>Профіль</AppText>

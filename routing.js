@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Pressable, View } from "react-native";
@@ -5,7 +6,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { IconButton } from "./components";
+import { IconButton, TabBarIconContainer } from "./components";
 import { LoginScreen, RegistrationScreen } from "./screens/auth";
 import { PostsScreen, ProfileScreen, CreatePostsScreen } from "./screens/main";
 import { APP_COLORS } from "./components/constants";
@@ -31,6 +32,8 @@ const HEADER_OPTIONS = {
 };
 
 function HomeTabs({ onAuth }) {
+  const [isFocusedProfile, setIsFocusedProfile] = useState(false);
+  console.log("isFocusedProfile", isFocusedProfile);
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -59,49 +62,85 @@ function HomeTabs({ onAuth }) {
         name="Posts"
         component={PostsScreen}
       />
-      <HomeStack.Screen
-        options={({ navigation }) => ({
-          title: "Створити пост",
-          headerBackVisible: true,
-          headerLeft: () => (
-            <IconButton
-              name="arrow-back"
-              icon={Ionicons}
-              color={blue}
-              onPress={() => navigation.goBack()}
-            />
-          ),
-          headerLeftContainerStyle: {
-            marginLeft: 10,
-          },
-          tabBarIcon: () => (
-            <View
-              style={{
-                backgroundColor: yellow,
-                width: 70,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 20,
-              }}
-            >
-              <Feather name="plus" size={24} color={blue} />
-            </View>
-          ),
-        })}
-        name="Create post"
-        component={CreatePostsScreen}
-      />
-      <HomeStack.Screen
-        options={{
-          title: "Профіль",
-          tabBarIcon: () => (
-            <Feather name="user" size={24} color={transparentBlack} />
-          ),
-        }}
-        name="Profile"
-        component={ProfileScreen}
-      />
+      {isFocusedProfile ? (
+        <>
+          <HomeStack.Screen
+            options={{
+              title: "Профіль",
+              tabBarIcon: () => (
+                <TabBarIconContainer>
+                  <Feather name="user" size={24} color={blue} />
+                </TabBarIconContainer>
+              ),
+            }}
+            name="Profile"
+            children={(props) => (
+              <ProfileScreen {...props} onFocused={setIsFocusedProfile} />
+            )}
+          />
+          <HomeStack.Screen
+            options={({ navigation }) => ({
+              title: "Створити пост",
+              headerBackVisible: true,
+              headerLeft: () => (
+                <IconButton
+                  name="arrow-back"
+                  icon={Ionicons}
+                  color={blue}
+                  onPress={() => navigation.goBack()}
+                />
+              ),
+              headerLeftContainerStyle: {
+                marginLeft: 10,
+              },
+              tabBarIcon: () => (
+                <Feather name="plus" size={24} color={transparentBlack} />
+              ),
+            })}
+            name="Create post"
+            component={CreatePostsScreen}
+          />
+        </>
+      ) : (
+        <>
+          <HomeStack.Screen
+            options={({ navigation }) => ({
+              title: "Створити пост",
+              headerBackVisible: true,
+              headerLeft: () => (
+                <IconButton
+                  name="arrow-back"
+                  icon={Ionicons}
+                  color={blue}
+                  onPress={() => navigation.goBack()}
+                />
+              ),
+              headerLeftContainerStyle: {
+                marginLeft: 10,
+              },
+              tabBarIcon: () => (
+                <TabBarIconContainer>
+                  <Feather name="plus" size={24} color={blue} />
+                </TabBarIconContainer>
+              ),
+            })}
+            name="Create post"
+            component={CreatePostsScreen}
+          />
+          <HomeStack.Screen
+            options={{
+              title: "Профіль",
+              tabBarIcon: () => (
+                <Feather name="user" size={24} color={transparentBlack} />
+              ),
+            }}
+            name="Profile"
+            children={(props) => (
+              <ProfileScreen {...props} onFocused={setIsFocusedProfile} />
+            )}
+          />
+        </>
+      )}
     </HomeStack.Navigator>
   );
 }
