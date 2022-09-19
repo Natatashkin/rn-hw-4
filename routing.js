@@ -32,20 +32,66 @@ const HEADER_OPTIONS = {
 };
 
 function HomeTabs({ onAuth }) {
-  const [isFocusedProfile, setIsFocusedProfile] = useState(false);
-  console.log("isFocusedProfile", isFocusedProfile);
   return (
     <HomeStack.Navigator
+      initialRouteName="Posts"
       screenOptions={{
         tabBarShowLabel: false,
+        tabBarActiveTintColor: blue,
+        tabBarInactiveTintColor: transparentBlack,
         ...HEADER_OPTIONS,
       }}
     >
       <HomeStack.Screen
         options={{
+          title: "Профіль",
+          tabBarAccessibilityLabel: "Профіль",
+          tabBarIcon: (props) => (
+            <Feather name="user" size={24} color={props.color} />
+          ),
+        }}
+        name="Profile"
+        component={ProfileScreen}
+      />
+      <HomeStack.Screen
+        options={({ navigation }) => ({
+          title: "Створити пост",
+          headerBackVisible: true,
+          tabBarAccessibilityLabel: "Створити пост",
+          headerLeft: () => (
+            <IconButton
+              name="arrow-back"
+              icon={Ionicons}
+              color={blue}
+              onPress={() => navigation.goBack()}
+            />
+          ),
+          headerLeftContainerStyle: {
+            marginLeft: 15,
+          },
+          tabBarIcon: ({ focused }) => {
+            console.log("routing", focused);
+            return (
+              <TabBarIconContainer isFocused={focused}>
+                <Feather
+                  name="plus"
+                  size={24}
+                  color={focused ? yellow : blue}
+                />
+              </TabBarIconContainer>
+            );
+          },
+        })}
+        name="Create post"
+        component={CreatePostsScreen}
+      />
+
+      <HomeStack.Screen
+        options={{
           title: "Публікації",
-          tabBarIcon: () => (
-            <AntDesign name="appstore-o" size={24} color={transparentBlack} />
+          tabBarAccessibilityLabel: "Публікації",
+          tabBarIcon: (props) => (
+            <AntDesign name="appstore-o" size={24} color={props.color} />
           ),
           headerRight: () => (
             <IconButton
@@ -56,91 +102,12 @@ function HomeTabs({ onAuth }) {
             />
           ),
           headerRightContainerStyle: {
-            marginRight: 10,
+            marginRight: 15,
           },
         }}
         name="Posts"
         component={PostsScreen}
       />
-      {isFocusedProfile ? (
-        <>
-          <HomeStack.Screen
-            options={{
-              title: "Профіль",
-              tabBarIcon: () => (
-                <TabBarIconContainer>
-                  <Feather name="user" size={24} color={blue} />
-                </TabBarIconContainer>
-              ),
-            }}
-            name="Profile"
-            children={(props) => (
-              <ProfileScreen {...props} onFocused={setIsFocusedProfile} />
-            )}
-          />
-          <HomeStack.Screen
-            options={({ navigation }) => ({
-              title: "Створити пост",
-              headerBackVisible: true,
-              headerLeft: () => (
-                <IconButton
-                  name="arrow-back"
-                  icon={Ionicons}
-                  color={blue}
-                  onPress={() => navigation.goBack()}
-                />
-              ),
-              headerLeftContainerStyle: {
-                marginLeft: 10,
-              },
-              tabBarIcon: () => (
-                <Feather name="plus" size={24} color={transparentBlack} />
-              ),
-            })}
-            name="Create post"
-            component={CreatePostsScreen}
-          />
-        </>
-      ) : (
-        <>
-          <HomeStack.Screen
-            options={({ navigation }) => ({
-              title: "Створити пост",
-              headerBackVisible: true,
-              headerLeft: () => (
-                <IconButton
-                  name="arrow-back"
-                  icon={Ionicons}
-                  color={blue}
-                  onPress={() => navigation.goBack()}
-                />
-              ),
-              headerLeftContainerStyle: {
-                marginLeft: 10,
-              },
-              tabBarIcon: () => (
-                <TabBarIconContainer>
-                  <Feather name="plus" size={24} color={blue} />
-                </TabBarIconContainer>
-              ),
-            })}
-            name="Create post"
-            component={CreatePostsScreen}
-          />
-          <HomeStack.Screen
-            options={{
-              title: "Профіль",
-              tabBarIcon: () => (
-                <Feather name="user" size={24} color={transparentBlack} />
-              ),
-            }}
-            name="Profile"
-            children={(props) => (
-              <ProfileScreen {...props} onFocused={setIsFocusedProfile} />
-            )}
-          />
-        </>
-      )}
     </HomeStack.Navigator>
   );
 }
