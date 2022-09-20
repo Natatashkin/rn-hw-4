@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { TextInput, View, StyleSheet, Pressable } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { SimpleLineIcons } from "@expo/vector-icons";
 import { MAIN_TEXT_FONT, APP_COLORS } from "../constants";
 
 const InputText = ({
+  adornment = false,
+  variant = "outlined",
   setKeyboardStatus,
   placeholder,
   marginBottom,
@@ -14,6 +17,37 @@ const InputText = ({
   const [inputFocus, setInputFocus] = useState(false);
   const [activeIcon, setActiveIcon] = useState(false);
   const currentInput = useRef(null);
+
+  const inputVariant = useMemo(
+    () => (variant === "outlined" ? styles.outlined : styles.underlined),
+    [variant]
+  );
+
+  const isInputOnFocus = useMemo(
+    () =>
+      inputFocus
+        ? styles.inputOnFocus
+        : variant === "outlined"
+        ? styles.inputWhithoutFocus
+        : styles.inputWhithoutFocusUnderlined,
+    [inputFocus, variant]
+  );
+  const isMarginBottom = useMemo(
+    () => marginBottom && styles.marginInput,
+    [marginBottom]
+  );
+
+  const isHorizontalPaddings = useMemo(
+    () =>
+      secureTextEntry
+        ? { paddingLeft: 16 }
+        : variant === "outlined"
+        ? { paddingHorizontal: 16 }
+        : adornment
+        ? { paddingRight: 8 }
+        : null,
+    [secureTextEntry, variant, adornment]
+  );
 
   const toggleIconPress = () => {
     setActiveIcon(!activeIcon);
@@ -28,21 +62,23 @@ const InputText = ({
     }
     setInputFocus(false);
   };
-  const isInputOnFocus = useMemo(
-    () => (inputFocus ? styles.inputOnFocus : styles.inputWhithoutFocus),
-    [inputFocus]
-  );
-  const isMarginBottom = useMemo(
-    () => marginBottom && styles.marginInput,
-    [marginBottom]
-  );
-
-  const isHorizontalPaddings = secureTextEntry
-    ? { paddingLeft: 16 }
-    : { paddingHorizontal: 16 };
 
   return (
-    <View style={[styles.inputContainer, isInputOnFocus, isMarginBottom]}>
+    <View
+      style={[
+        styles.inputContainer,
+        inputVariant,
+        isInputOnFocus,
+        isMarginBottom,
+      ]}
+    >
+      {adornment && (
+        <SimpleLineIcons
+          name="location-pin"
+          size={24}
+          color={styles.iconColor.color}
+        />
+      )}
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -82,8 +118,13 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  outlined: {
     borderWidth: 1,
     borderRadius: 10,
+  },
+  underlined: {
+    borderBottomWidth: 1,
   },
   input: {
     flex: 1,
@@ -98,6 +139,11 @@ const styles = StyleSheet.create({
   inputWhithoutFocus: {
     borderColor: grey,
     backgroundColor: lightGrey,
+    color: darkGrey,
+  },
+
+  inputWhithoutFocusUnderlined: {
+    borderColor: grey,
     color: darkGrey,
   },
 

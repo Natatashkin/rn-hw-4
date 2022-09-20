@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import * as SecureStore from "expo-secure-store";
+import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import {
   StyleSheet,
   Text,
@@ -8,8 +11,6 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
 import useLoadedFonts from "../../../hooks/useLoadedFonts";
 import useAdaptiveHeight from "../../../hooks/useAdaptiveHeight";
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
@@ -22,6 +23,12 @@ import {
 import { APP_COLORS } from "../../../components/constants";
 
 const { blue, yellow, transparentBlack, black, white } = APP_COLORS;
+
+async function saveFormData(key, value) {
+  await SecureStore.setItemAsync(key, value, {
+    keychainService: SecureStore.AFTER_FIRST_UNLOCK,
+  });
+}
 
 export default function RegistrationScreen({ navigation, onAuth }) {
   const { width, height } = useWindowDimensions();
@@ -45,10 +52,15 @@ export default function RegistrationScreen({ navigation, onAuth }) {
     });
   };
 
-  const handleGetFormData = () => {
-    console.log(formValues);
-    setFormValues(REGISTRATION_FORM_DEFAULT_FIELDS);
-    onAuth(true);
+  const handleGetFormData = async () => {
+    const formData = Object.entries(formValues);
+    const newData = formData.reduce(
+      (acc, [key, value]) => {
+        return { ...acc, [key]: value };
+      },
+      { token: null }
+    );
+    await saveFormData("userData", JSON.stringify(newData));
   };
 
   return (
@@ -90,6 +102,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
               <ScrollView>
                 <Text style={styles.pageTitle}>Реєстрація</Text>
                 <InputTextField
+                  variant="outlined"
                   placeholder="Логін"
                   marginBottom
                   value={formValues.login}
@@ -98,6 +111,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
                   }
                 />
                 <InputTextField
+                  variant="outlined"
                   placeholder="Адреса електронної пошти"
                   marginBottom
                   value={formValues.email}
@@ -106,6 +120,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
                   }
                 />
                 <InputTextField
+                  variant="outlined"
                   placeholder="Пароль"
                   secureTextEntry
                   value={formValues.password}

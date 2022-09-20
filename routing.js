@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Pressable, View } from "react-native";
+// import { Pressable, View } from "react-native";
+import * as SecureStore from "expo-secure-store";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -70,7 +71,6 @@ function HomeTabs({ onAuth }) {
             marginLeft: 15,
           },
           tabBarIcon: ({ focused }) => {
-            console.log("routing", focused);
             return (
               <TabBarIconContainer isFocused={focused}>
                 <Feather
@@ -112,7 +112,7 @@ function HomeTabs({ onAuth }) {
   );
 }
 
-function Authentication({ onAuth }) {
+function Authentication({}) {
   return (
     <AuthStack.Navigator
       screenOptions={{
@@ -120,12 +120,12 @@ function Authentication({ onAuth }) {
       }}
     >
       <AuthStack.Screen
-        name="SignIn"
-        children={(props) => <LoginScreen {...props} onAuth={onAuth} />}
+        name="SignUp"
+        children={(props) => <RegistrationScreen {...props} />}
       />
       <AuthStack.Screen
-        name="SignUp"
-        children={(props) => <RegistrationScreen {...props} onAuth={onAuth} />}
+        name="SignIn"
+        children={(props) => <LoginScreen {...props} />}
       />
     </AuthStack.Navigator>
   );

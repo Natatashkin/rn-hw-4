@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useState } from "react";
+import * as SecureStore from "expo-secure-store";
 import {
   StyleSheet,
   Text,
@@ -19,7 +20,6 @@ import { APP_COLORS } from "../../../components/constants";
 const { blue, black, white, transparentBlack } = APP_COLORS;
 
 export default function LoginScreen({ navigation, onAuth }) {
-  console.log(navigation);
   const { width, height } = useWindowDimensions();
   const { keyboardStatus, setKeyboardStatus, handleKeyboardHide } =
     useKeyboardStatus();
@@ -62,6 +62,7 @@ export default function LoginScreen({ navigation, onAuth }) {
             <ScrollView style={keyboardStatus && styles.formScrollContainer}>
               <Text style={[styles.pageTitle]}>Увійти</Text>
               <InputTextField
+                variant="outlined"
                 placeholder="Адреса електронної пошти"
                 marginBottom
                 value={formValues.email}
@@ -70,6 +71,7 @@ export default function LoginScreen({ navigation, onAuth }) {
                 }
               />
               <InputTextField
+                variant="outlined"
                 setKeyboardStatus={setKeyboardStatus}
                 placeholder="Пароль"
                 secureTextEntry
