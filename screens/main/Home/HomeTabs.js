@@ -6,10 +6,16 @@ import {
   AntDesign,
   MaterialIcons,
 } from "@expo/vector-icons";
-// import { Feather } from "@expo/vector-icons";
-import { PostsScreen, ProfileScreen, CreatePostsScreen } from "../";
+// import Ionicons from "@expo/vector-icons/Ionicons";
+// import Feather from "@expo/vector-icons/Feather";
+// import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+// import AntDesign from "@expo/vector-icons/AntDesign";
+// import { PostsScreen, ProfileScreen, CreatePostsScreen } from "../";
+import { useUser } from "../../../hooks/context";
+import PostsScreen from "../PostsScreen/PostsScreen";
+import ProfileScreen from "../ProfileScreen/ProfileScreen";
+import CreatePostsScreen from "../CreatePostsScreen/CreatePostsScreen";
 import { IconButton, TabBarIconContainer } from "../../../components";
-import useCheckAuth from "../../../hooks/useCheckAuth";
 import { APP_COLORS } from "../../../components/constants";
 
 const HEADER_OPTIONS = {
@@ -31,8 +37,7 @@ const HomeStack = createBottomTabNavigator();
 const { blue, transparentBlack, yellow, darkGrey } = APP_COLORS;
 
 const HomeTabs = () => {
-  const { logout } = useCheckAuth();
-
+  const { deleteUserData } = useUser();
   return (
     <HomeStack.Navigator
       initialRouteName="Posts"
@@ -45,14 +50,25 @@ const HomeTabs = () => {
     >
       <HomeStack.Screen
         options={{
-          title: "Профіль",
-          tabBarAccessibilityLabel: "Профіль",
+          title: "Публікації",
+          tabBarAccessibilityLabel: "Публікації",
           tabBarIcon: (props) => (
-            <Feather name="user" size={24} color={props.color} />
+            <AntDesign name="appstore-o" size={24} color={props.color} />
           ),
+          headerRight: () => (
+            <IconButton
+              icon={MaterialIcons}
+              name="logout"
+              color={darkGrey}
+              onPress={async () => await deleteUserData("userData")}
+            />
+          ),
+          headerRightContainerStyle: {
+            marginRight: 15,
+          },
         }}
-        name="Profile"
-        component={ProfileScreen}
+        name="Posts"
+        component={PostsScreen}
       />
       <HomeStack.Screen
         options={({ navigation }) => ({
@@ -88,25 +104,14 @@ const HomeTabs = () => {
 
       <HomeStack.Screen
         options={{
-          title: "Публікації",
-          tabBarAccessibilityLabel: "Публікації",
+          title: "Профіль",
+          tabBarAccessibilityLabel: "Профіль",
           tabBarIcon: (props) => (
-            <AntDesign name="appstore-o" size={24} color={props.color} />
+            <Feather name="user" size={24} color={props.color} />
           ),
-          headerRight: () => (
-            <IconButton
-              icon={MaterialIcons}
-              name="logout"
-              color={darkGrey}
-              onPress={logout}
-            />
-          ),
-          headerRightContainerStyle: {
-            marginRight: 15,
-          },
         }}
-        name="Posts"
-        component={PostsScreen}
+        name="Profile"
+        component={ProfileScreen}
       />
     </HomeStack.Navigator>
   );

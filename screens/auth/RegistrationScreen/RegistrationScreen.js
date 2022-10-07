@@ -15,7 +15,7 @@ import useLoadedFonts from "../../../hooks/useLoadedFonts";
 import useAdaptiveHeight from "../../../hooks/useAdaptiveHeight";
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
 import useKeyboardStatus from "../../../hooks/useKeyboardStatus";
-import useCheckAuth from "../../../hooks/useCheckAuth";
+import { useUser } from "../../../hooks/context";
 import { InputTextField, Button, AppText } from "../../../components";
 import {
   REGISTRATION_FORM_DEFAULT_FIELDS,
@@ -37,7 +37,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
   const [formValues, setFormValues] = useState(
     REGISTRATION_FORM_DEFAULT_FIELDS
   );
-  const { saveFormData } = useCheckAuth();
+  const { saveUserData } = useUser();
 
   const formPaddings = keyboardStatus
     ? styles.formScrollPaddings
@@ -60,7 +60,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
       },
       { token: null }
     );
-    await saveFormData("userData", JSON.stringify(newData));
+    await saveUserData("userData", JSON.stringify(newData));
   };
 
   return (
