@@ -8,34 +8,29 @@ import { HomeTabs } from "../../screens/main";
 const Stack = createStackNavigator();
 
 export default function Navigator() {
-  const { isLoggedIn } = useUser();
-  // const isLoggedIn = false;
-  console.log("Navigator", isLoggedIn);
+  // const { isLoggedIn } = useUser();
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isLoggedIn ? (
+        <Stack.Screen
+          name="Home"
+          component={HomeTabs}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <>
           <Stack.Screen
-            name="Home"
-            component={HomeTabs}
-            options={{
-              headerShown: false,
-            }}
+            options={{ headerShown: false }}
+            name="SignUp"
+            component={RegistrationScreen}
           />
-        ) : (
-          <>
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="SignUp"
-              component={RegistrationScreen}
-            />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="SignIn"
-              component={LoginScreen}
-            />
-          </>
-        )}
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="SignIn"
+            component={LoginScreen}
+          />
+        </>
       </Stack.Navigator>
     </NavigationContainer>
   );
