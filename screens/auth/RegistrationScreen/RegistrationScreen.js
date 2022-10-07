@@ -15,6 +15,7 @@ import useLoadedFonts from "../../../hooks/useLoadedFonts";
 import useAdaptiveHeight from "../../../hooks/useAdaptiveHeight";
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
 import useKeyboardStatus from "../../../hooks/useKeyboardStatus";
+import useCheckAuth from "../../../hooks/useCheckAuth";
 import { InputTextField, Button, AppText } from "../../../components";
 import {
   REGISTRATION_FORM_DEFAULT_FIELDS,
@@ -24,11 +25,9 @@ import { APP_COLORS } from "../../../components/constants";
 
 const { blue, yellow, transparentBlack, black, white } = APP_COLORS;
 
-async function saveFormData(key, value) {
-  await SecureStore.setItemAsync(key, value, {
-    keychainService: SecureStore.AFTER_FIRST_UNLOCK,
-  });
-}
+// async function saveFormData(key, value) {
+//   await SecureStore.setItemAsync(key, value);
+// }
 
 export default function RegistrationScreen({ navigation, onAuth }) {
   const { width, height } = useWindowDimensions();
@@ -38,6 +37,7 @@ export default function RegistrationScreen({ navigation, onAuth }) {
   const [formValues, setFormValues] = useState(
     REGISTRATION_FORM_DEFAULT_FIELDS
   );
+  const { saveFormData } = useCheckAuth();
 
   const formPaddings = keyboardStatus
     ? styles.formScrollPaddings

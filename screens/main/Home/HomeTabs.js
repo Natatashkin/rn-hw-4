@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
-// import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import { Pressable, View } from "react-native";
-import * as SecureStore from "expo-secure-store";
-// import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Ionicons,
+  Feather,
+  AntDesign,
+  MaterialIcons,
+} from "@expo/vector-icons";
 // import { Feather } from "@expo/vector-icons";
-// import { AntDesign } from "@expo/vector-icons";
-// import { Ionicons } from "@expo/vector-icons";
-// import { IconButton, TabBarIconContainer } from "./components";
-// import { LoginScreen, RegistrationScreen } from "./screens/auth";
-// import { PostsScreen, ProfileScreen, CreatePostsScreen } from "./screens/main";
-// import { APP_COLORS } from "./components/constants";
-
-const AuthStack = createStackNavigator();
-
-const { blue, transparentBlack, yellow, darkGrey } = APP_COLORS;
+import { PostsScreen, ProfileScreen, CreatePostsScreen } from "../";
+import { IconButton, TabBarIconContainer } from "../../../components";
+import useCheckAuth from "../../../hooks/useCheckAuth";
+import { APP_COLORS } from "../../../components/constants";
 
 const HEADER_OPTIONS = {
   headerStyle: {
@@ -31,7 +27,12 @@ const HEADER_OPTIONS = {
   headerShadowVisible: true,
 };
 
-function HomeTabs({ onAuth }) {
+const HomeStack = createBottomTabNavigator();
+const { blue, transparentBlack, yellow, darkGrey } = APP_COLORS;
+
+const HomeTabs = () => {
+  const { logout } = useCheckAuth();
+
   return (
     <HomeStack.Navigator
       initialRouteName="Posts"
@@ -97,7 +98,7 @@ function HomeTabs({ onAuth }) {
               icon={MaterialIcons}
               name="logout"
               color={darkGrey}
-              onPress={() => onAuth(false)}
+              onPress={logout}
             />
           ),
           headerRightContainerStyle: {
@@ -109,47 +110,6 @@ function HomeTabs({ onAuth }) {
       />
     </HomeStack.Navigator>
   );
-}
+};
 
-function Authentication({}) {
-  return (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <AuthStack.Screen
-        name="SignUp"
-        children={(props) => <RegistrationScreen {...props} />}
-      />
-      <AuthStack.Screen
-        name="SignIn"
-        children={(props) => <LoginScreen {...props} />}
-      />
-    </AuthStack.Navigator>
-  );
-}
-
-// export const useRoute = (isAuth, authHandler) => {
-//   return (
-//     <MainStack.Navigator>
-//       {isAuth ? (
-//         <MainStack.Screen
-//           name="Home"
-//           children={(props) => <HomeTabs {...props} onAuth={authHandler} />}
-//           options={{
-//             headerShown: false,
-//           }}
-//         />
-//       ) : (
-//         <MainStack.Screen
-//           options={{ headerShown: false }}
-//           name="Auth"
-//           children={(props) => (
-//             <Authentication {...props} onAuth={authHandler} />
-//           )}
-//         />
-//       )}
-//     </MainStack.Navigator>
-//   );
-// };
+export default HomeTabs;

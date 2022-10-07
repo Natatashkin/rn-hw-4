@@ -1,31 +1,58 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import * as SecureStore from "expo-secure-store";
+
 import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import UserProvider, { useUser } from "./hooks/context";
 import useLoadedFonts from "./hooks/useLoadedFonts";
-import { useRoute } from "./routing";
-import { useEffect, useMemo } from "react/cjs/react.development";
+import { LoginScreen, RegistrationScreen } from "./screens/auth";
+import { HomeTabs } from "./screens/main";
 
 SplashScreen.preventAutoHideAsync();
-
-const getUserData = async (key) => {
-  const userData = await SecureStore.getItemAsync(key);
-  console.log(JSON.parse(userData));
-  return userData;
-};
-
-// getUserData("userData");
+const Stack = createStackNavigator();
 
 export default function App() {
   const { fontsLoaded } = useLoadedFonts();
-  const [isAuth, setIsAuth] = useState(() => getUserData("userData"));
+  const { isLoggedIn } = useUser();
 
-  const currentRote = useMemo(() => useRoute(isAuth, setIsAuth), [isAuth]);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   if (!fontsLoaded) {
     return null;
   }
 
-  return <NavigationContainer>{currentRote}</NavigationContainer>;
+  console.log(isLoggedIn);
+  // console.log(userData);
+
+  return (
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          {isLoggedIn ? (
+            <Stack.Screen
+              name="Home"
+              component={HomeTabs}
+              options={{
+                headerShown: false,
+              }}
+            />
+          ) : (
+            <>
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="SignUp"
+                component={RegistrationScreen}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name="SignIn"
+                component={LoginScreen}
+              />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
+  );
 }

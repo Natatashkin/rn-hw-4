@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import React from "react";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
-
 import { AppText } from "../../../components";
 
 export default function PostsScreen() {
